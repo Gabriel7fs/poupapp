@@ -4,7 +4,7 @@
   </div>
 
   <div class="corpo-card">
-    <span class="valor texto-xxxl">
+    <span [appDestaqueValorNumerico]="saldo()" corDeposito="var(--violeta-destaque)" class="valor texto-xxxl">
       {{ saldo() | currency:"BRL" }}
     </span>
   </div>
