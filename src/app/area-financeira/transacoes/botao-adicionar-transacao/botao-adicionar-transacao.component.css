@@ -1,0 +1,69 @@
+.icone-moeda {
+  width: 1rem;
+}
+
+.dialog::backdrop {
+  opacity: 0.5;
+  background: var(--texto);
+}
+
+.dialog {
+  position: fixed;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+
+  border: 0;
+  border-radius: 1.5rem;
+  padding: 2.5rem;
+  width: calc(100% - 2rem);
+  max-width: 37.5rem;
+  background: var(--fundo-geral);
+  color: var(--texto);
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.label-grupo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.input {
+  padding: 0.5rem 1rem;
+
+  border-radius: 0.5rem;
+  border: 0;
+  background: var(--fundo-componentes);
+}
+
+.grupo-tipo-transacao {
+  border: 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.legend {
+  margin-bottom: 0.5rem;
+}
+
+.label-grupo-radio {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.select-conta-transacao {
+  appearance: none;
+}
+
+.botao-adicionar-transacao {
+  margin-left: auto;
+}
