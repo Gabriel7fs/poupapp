@@ -1,4 +1,4 @@
-import { Component, signal } from '@angular/core';
+import { Component, computed, signal } from '@angular/core';
 import { SaldoComponent } from "./saldo/saldo.component";
 import { TransacoesComponent } from "./transacoes/transacoes.component";
 import { ContasComponent } from "./contas/contas.component";
@@ -12,71 +12,41 @@ import { Transacao, TipoTransacao } from './compartilhados/transacao.model';
   styleUrl: './area-financeira.component.css'
 })
 export class AreaFinanceiraComponent {
-  saldo = 4000;
 
-  transacoes = signal<Transacao[]>([
-    {
-      id: '5',
-      nome: '',
-      tipo: TipoTransacao.SAQUE,
-      valor: 200,
-      data: new Date('2025-02-20T00:00'),
-      conta: 'Switch Bank'
-    },
-    {
-      id: '4',
-      nome: 'Almoço',
-      tipo: TipoTransacao.SAQUE,
-      valor: 40,
-      data: new Date('2025-01-15T00:00'),
-      conta: 'Bytebank'
-    },
-    {
-      id: '3',
-      nome: '',
-      tipo: TipoTransacao.DEPOSITO,
-      valor: 400,
-      data: new Date('2025-01-10T00:00'),
-      conta: 'Bytebank'
-    },
-    {
-      id: '2',
-      nome: 'Freela (2ª parte)',
-      tipo: TipoTransacao.DEPOSITO,
-      valor: 200,
-      data: new Date('2024-10-01T00:00'),
-      conta: 'Anybank'
-    },
-    {
-      id: '1',
-      nome: 'Freela (1ª parte)',
-      tipo: TipoTransacao.DEPOSITO,
-      valor: 100,
-      data: new Date('2024-10-01T00:00'),
-      conta: 'Anybank'
-    },
-  ]);
+  saldo = computed(() => {
+    return this.contas().reduce((saldoTotal, conta) => {
+      return saldoTotal + conta.saldo;
+    }, 0);
+  });
 
-  contas = signal<Conta[]>([
-    {
-      nome: 'Anybank',
-      saldo: 1000,
-    },
-    {
-      nome: 'Bytebank',
-      saldo: 0,
-    },
-    {
-      nome: 'Switch Bank',
-      saldo: 0,
-    },
-  ]);
+  transacoes = signal<Transacao[]>([]);
+
+  contasSaldoInicial = signal<Conta[]>([]);
+
+  contas = computed(() => {
+    return this.contasSaldoInicial().map((conta) => {
+      const saldoAtualizado = this.calculaSaldo(conta);
+      return {...conta, saldo: saldoAtualizado};
+    });
+  });
+
+  calculaSaldo(contaInicial: Conta) {
+    return this.transacoes().reduce((novoSaldo, transacao) => {
+      if (transacao.conta === contaInicial.nome) {
+        if (transacao.tipo === TipoTransacao.DEPOSITO) {
+          return novoSaldo + transacao.valor;
+        }
+        return novoSaldo - transacao.valor;
+      }
+      return novoSaldo;
+    }, contaInicial.saldo);
+  }
 
   processarTransacao(transacao: Transacao) {
     this.transacoes.update((transacoes) => [transacao, ...transacoes]);
   }
 
   processarConta(conta: Conta) {
-    this.contas.update((contas) => [conta, ...contas]);
+    this.contasSaldoInicial.update((contas) => [conta, ...contas]);
   }
 }
